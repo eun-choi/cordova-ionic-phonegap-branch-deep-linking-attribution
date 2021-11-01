@@ -87,7 +87,7 @@ SOFTWARE.
               <source url="https://cdn.cocoapods.org/"/>
           </config>
           <pods>
-              <pod name="Branch" spec="1.39.4" />
+              <pod name="Branch" spec="1.40.2" />
           </pods>
       </podspec>
   </platform>
