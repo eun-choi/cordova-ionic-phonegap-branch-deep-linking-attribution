@@ -15,16 +15,21 @@ const standardEvent = {
   STANDARD_EVENT_INITIATE_PURCHASE: "INITIATE_PURCHASE",
   STANDARD_EVENT_ADD_PAYMENT_INFO: "ADD_PAYMENT_INFO",
   STANDARD_EVENT_PURCHASE: "PURCHASE",
-  STANDARD_EVENT_SPEND_CREDITS: "SPEND_CREDITS",
   STANDARD_EVENT_SEARCH: "SEARCH",
   STANDARD_EVENT_VIEW_ITEM: "VIEW_ITEM",
   STANDARD_EVENT_VIEW_ITEMS: "VIEW_ITEMS",
   STANDARD_EVENT_RATE: "RATE",
   STANDARD_EVENT_SHARE: "SHARE",
+  STANDARD_EVENT_INITIATE_STREAM: "INITIATE_STREAM",
+  STANDARD_EVENT_COMPLETE_STREAM: "COMPLETE_STREAM",
   STANDARD_EVENT_COMPLETE_REGISTRATION: "COMPLETE_REGISTRATION",
   STANDARD_EVENT_COMPLETE_TUTORIAL: "COMPLETE_TUTORIAL",
   STANDARD_EVENT_ACHIEVE_LEVEL: "ACHIEVE_LEVEL",
-  STANDARD_EVENT_UNLOCK_ACHIEVEMENT: "UNLOCK_ACHIEVEMENT"
+  STANDARD_EVENT_UNLOCK_ACHIEVEMENT: "UNLOCK_ACHIEVEMENT",
+  STANDARD_EVENT_INVITE: "INVITE",
+  STANDARD_EVENT_LOGIN: "LOGIN",
+  STANDARD_EVENT_SUBSCRIBE: "SUBSCRIBE",
+  STANDARD_EVENT_START_TRIAL: "START_TRIAL"
 }
 
 // Branch prototype
@@ -291,24 +296,6 @@ Branch.prototype.createBranchUniversalObject = function createBranchUniversalObj
       }
     );
   });
-};
-
-Branch.prototype.loadRewards = function loadRewards(bucket) {
-  var output = !bucket ? "" : bucket;
-  return execute("loadRewards", [output]);
-};
-
-Branch.prototype.redeemRewards = function redeemRewards(value, bucket) {
-  var params = [value];
-  if (bucket) {
-    params.push(bucket);
-  }
-
-  return execute("redeemRewards", params);
-};
-
-Branch.prototype.creditHistory = function creditHistory() {
-  return execute("getCreditHistory");
 };
 
 Branch.prototype.crossPlatformIds = function crossPlatformIds() {
