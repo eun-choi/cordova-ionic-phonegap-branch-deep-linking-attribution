@@ -119,7 +119,7 @@ public class BranchSDK extends CordovaPlugin {
 
         Runnable r = new RunnableThread(action, args, callbackContext);
 
-        if (action.equals("enableLogging")) {
+        if (action.equals("setLogging")) {
             cordova.getActivity().runOnUiThread(r);
             return true;
         } else if (action.equals("setCookieBasedMatching")) {
@@ -137,6 +137,13 @@ public class BranchSDK extends CordovaPlugin {
         } else {
             if (this.instance != null) {
                 if (action.equals("setIdentity")) {
+                    cordova.getActivity().runOnUiThread(r);
+                    return true;
+                } else if (action.equals("userCompletedAction")) {
+                    if (args.length() < 1 && args.length() > 2) {
+                        callbackContext.error(String.format("Parameter count mismatch"));
+                        return false;
+                    }
                     cordova.getActivity().runOnUiThread(r);
                     return true;
                 } else if (action.equals("sendBranchEvent")) {
@@ -600,7 +607,7 @@ public class BranchSDK extends CordovaPlugin {
      * @param isEnable        A {@link Boolean} value to enable/disable logging
      * @param callbackContext A callback to execute at the end of this method
      */
-    private void enableLogging(boolean isEnable, CallbackContext callbackContext) {
+    private void setLogging(boolean isEnable, CallbackContext callbackContext) {
         this.activity = this.cordova.getActivity();
         if (isEnable == true) {
             Branch.enableLogging();
@@ -648,6 +655,40 @@ public class BranchSDK extends CordovaPlugin {
     private void setRequestMetadata(String key, String val, CallbackContext callbackContext) {
 
         Branch.getInstance().setRequestMetadata(key, val);
+
+        callbackContext.success("Success");
+
+    }
+
+    /**
+     * <p>A void call to indicate that the user has performed a specific action and for that to be
+     * reported to the Branch API.</p>
+     *
+     * @param action          A {@link String} value to be passed as an action that the user has carried out.
+     *                        For example "logged in" or "registered".
+     * @param callbackContext A callback to execute at the end of this method
+     */
+    private void userCompletedAction(String action, CallbackContext callbackContext) {
+
+        this.instance.userCompletedAction(action);
+
+        callbackContext.success("Success");
+
+    }
+
+    /**
+     * <p>A void call to indicate that the user has performed a specific action and for that to be
+     * reported to the Branch API.</p>
+     *
+     * @param action          A {@link String} value to be passed as an action that the user has carried
+     *                        out. For example "logged in" or "registered".
+     * @param metaData        A {@link JSONObject} containing app-defined meta-data to be attached to a
+     *                        user action that has just been completed.
+     * @param callbackContext A callback to execute at the end of this method
+     */
+    private void userCompletedAction(String action, JSONObject metaData, CallbackContext callbackContext) {
+
+        this.instance.userCompletedAction(action, metaData);
 
         callbackContext.success("Success");
 
@@ -1192,8 +1233,8 @@ public class BranchSDK extends CordovaPlugin {
             try {
                 Log.d(LCAT, "Runnable: " + this.action);
 
-                if (this.action.equals("enableLogging")) {
-                    enableLogging(this.args.getBoolean(0), this.callbackContext);
+                if (this.action.equals("setLogging")) {
+                    setLogging(this.args.getBoolean(0), this.callbackContext);
                 } else if (this.action.equals("setCookieBasedMatching")) {
                     setCookieBasedMatching(this.args.getString(0), this.callbackContext);
                 } else if (this.action.equals("disableTracking")) {
@@ -1205,6 +1246,12 @@ public class BranchSDK extends CordovaPlugin {
                 } else {
                     if (this.action.equals("setIdentity")) {
                         setIdentity(this.args.getString(0), this.callbackContext);
+                    } else if (this.action.equals("userCompletedAction")) {
+                        if (this.args.length() == 2) {
+                            userCompletedAction(this.args.getString(0), this.args.getJSONObject(1), this.callbackContext);
+                        } else if (this.args.length() == 1) {
+                            userCompletedAction(this.args.getString(0), this.callbackContext);
+                        }
                     } else if (this.action.equals("sendBranchEvent")) {
                         if (this.args.length() == 2) {
                             sendBranchEvent(this.args.getString(0), this.args.getJSONObject(1), this.callbackContext);
